@@ -198,6 +198,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    table_print (1.5.7)
     thor (1.1.0)
     thread_safe (0.3.6)
     tilt (2.0.10)
@@ -245,6 +246,7 @@ DEPENDENCIES
   rspec-rails
   sass-rails (>= 6)
   shoulda-matchers
+  table_print (~> 1.5, >= 1.5.7)
   travis
   tzinfo-data
   web-console (>= 3.3.0)
