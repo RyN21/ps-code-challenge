@@ -33,6 +33,7 @@ group :development, :test do
   gem 'pry'
   gem 'csv'
   gem 'rspec-rails'
+  gem 'travis'
 end
 
 group :development do
