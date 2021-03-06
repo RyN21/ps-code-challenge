@@ -14,9 +14,17 @@
     - total_chairs: The total number of chairs in that Post Code
     - chairs_pct: Out of all the chairs at all the Post Codes, what percentage does this Post Code represent (should sum to 100% in the whole view)
     - place_with_max_chairs: The name of the place with the most chairs in that Post Code
-    -max_chairs: The number of chairs at the place_with_max_chairs
+    - max_chairs: The number of chairs at the place_with_max_chairs
 	
     *Please also include a brief description of how you verified #4*
+    
+    After creating a Restaurants table and a Restaurant model (class), I creating some sample instances of a Restaurant in the 
+    restaurant_spec.rb file. I then called the self method on the Restaurant class that sorts the restaurants by post code (by_post_code)
+    and stored them in `data`.
+    I then wrote tests based on what the outcome should equal to. 
+    I created a smaller version of the original CSV file and I am considering to implement that data into the spec instead of creating my own instances. 
+    As of now, I am unsure what is meant by (view SQL) but will look deeper into this.
+    
 
 5) Write a Rails script to categorize the cafes and write the result to the category according to the rules:[provide the script]
     - If the Post Code is of the LS1 prefix type:
