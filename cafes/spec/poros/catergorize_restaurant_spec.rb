@@ -11,15 +11,13 @@ RSpec.describe CatergorizeRestaurant, type: :model do
         num_of_chairs: row[3],
         })
     end
-
-    @rest = Restaurant.all
   end
+
   it 'can categorize restaurants' do
-    restaurants = CatergorizeRestaurant.new(@rest)
-    restaurants.categorize
-
+    restaurants = CatergorizeRestaurant.new(Restaurant.all).categorize
     expect(restaurants[0].category).to eq("ls1 medium")
-
-    # expect(restaurants[0].category)to. eq()
+    expect(restaurants[1].category).to eq("ls2 large")
+    expect(restaurants[4].category).to eq("ls1 small")
+    expect(restaurants[17].category).to eq("ls2 small")
   end
 end

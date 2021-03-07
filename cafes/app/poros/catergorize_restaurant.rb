@@ -33,7 +33,7 @@ class CatergorizeRestaurant
 
   def categorize_ls2(r)
     percentile = find_percentile
-    r.num_of_chairs >= percentile ? r.category = 'ls2 large' : r.category = 'ls2 samll'
+    r.num_of_chairs >= percentile ? r.category = 'ls2 large' : r.category = 'ls2 small'
   end
 
   def find_percentile
