@@ -54,7 +54,7 @@
 
     For the test, I took the smaller sample csv file and iterated over each to create Restaurants. Here is what I tested...
     ```
-      it '.categorize_cafes' do
+     it '.categorize_cafes' do
       data = Restaurant.categorize
       expect(data[0].category).to eq("ls1 medium")
       expect(data[1].category).to eq("ls2 large")
