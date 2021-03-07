@@ -98,4 +98,5 @@ class Restaurant < ApplicationRecord
   # EDIT NAME BASED ON CATEGORY
   # ============================================================================
 
+
 end
