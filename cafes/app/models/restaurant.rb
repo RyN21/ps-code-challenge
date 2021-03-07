@@ -31,24 +31,6 @@ class Restaurant < ApplicationRecord
   # CATEGORIZE RESTAURANTS
   # ============================================================================
 
-  def self.categorize_restaurants
-    Restaurant.all.each do |restaurant|
-      if restaurant.post_code.include?('LS1') && restaurant.num_of_chairs < 10
-        restaurant.update(category: 'ls1 small')
-        restaurant.save
-      elsif restaurant.post_code.include?('LS1') && restaurant.num_of_chairs > 10 && restaurant.num_of_chairs < 100
-        restaurant.update(category: 'ls1 medium')
-        restaurant.save
-      elsif restaurant.post_code.include?('LS1') && restaurant.num_of_chairs > 100
-        restaurant.update(category: 'ls1 large')
-        restaurant.save
-      else
-        restaurant.update(category: 'other')
-        restaurant.save
-      end
-    end
-  end
-
   def self.categorize
     Restaurant.all.each do |r|
       if r.post_code.include?('LS1')
@@ -97,6 +79,5 @@ class Restaurant < ApplicationRecord
   # ============================================================================
   # EDIT NAME BASED ON CATEGORY
   # ============================================================================
-
 
 end

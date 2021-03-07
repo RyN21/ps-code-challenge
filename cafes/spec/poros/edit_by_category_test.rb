@@ -12,7 +12,7 @@ RSpec.describe EditByCategory, type: :model do
         num_of_chairs: row[3],
         })
     end
-    Restaurant.categorize_restaurants
+    Restaurant.categorize
   end
 
   it 'can create csv for small restaurants' do
@@ -35,25 +35,29 @@ RSpec.describe EditByCategory, type: :model do
     expect(csv[1][4]).to eq("ls1 small")
 
     # Check the correct count (This include header row)
-    expect(csv.count).to eq(4)
+    expect(csv.count).to eq(5)
   end
 
   it 'can delete record of small restaurants' do
     restaurants = EditByCategory.new(Restaurant.all)
     small = restaurants.find_small
-    expect(small.count).to eq(3)
+    expect(small.count).to eq(4)
 
     restaurants.delete_records(small)
     new_small = restaurants.find_small
     expect(new_small.count).to eq(0)
   end
 
-  # it 'can edit names from csv and return edited csv' do
-  #   restaurants = EditByCategory.new(Restaurant.all)
-  #   binding.pry
-  #   # expect(restaurants[0].category).to eq("ls1 medium")
-  #   # expect(restaurants[1].category).to eq("ls2 large")
-  #   # expect(restaurants[4].category).to eq("ls1 small")
-  #   # expect(restaurants[17].category).to eq("ls2 small")
-  # end
+  it 'can edit names based on category' do
+    data = EditByCategory.new(Restaurant.all)
+    data.edit_names
+
+    # Changes name for restaurants with category as medium or large
+    expect(data.restaurants[0].name).to eq("ls1 medium Bagel Nash")
+    expect(data.restaurants[1].name).to eq("ls1 medium Bagel Nash")
+    expect(data.restaurants[16].name).to eq("ls1 large Chilli White")
+
+    # Does NOT change name for restaurants that are not medium or large
+    expect(data.restaurants[2].name).to eq("Barburrito")
+  end
 end
