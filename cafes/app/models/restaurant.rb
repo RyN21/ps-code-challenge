@@ -15,9 +15,23 @@ class Restaurant < ApplicationRecord
     GROUP BY post_code
     ORDER BY post_code;').to_a
     # SELECT post_code, COUNT(id) AS total_places, SUM(num_of_chairs) AS total_chairs, ROUND((SUM(num_of_chairs)*100.00)/(SELECT SUM(num_of_chairs) FROM restaurants), 2) AS chairs_pct, MAX(num_of_chairs) AS max_chairs FROM restaurants GROUP BY post_code ORDER BY post_code;
+    # still need to get name of of place with max chairs
   end
 
-  def self.categorize_cafes
+  def self.aggregate_categories
+    ActiveRecord::Base.connection.select_all('SELECT category,
+    COUNT(id) AS total_places,
+    SUM(num_of_chairs) AS total_chairs
+    FROM restaurants
+    GROUP BY category
+    ORDER BY category;').to_a
+  end
+
+  # ============================================================================
+  # CATEGORIZE RESTAURANTS
+  # ============================================================================
+
+  def self.categorize_restaurants
     Restaurant.all.each do |restaurant|
       if restaurant.post_code.include?('LS1') && restaurant.num_of_chairs < 10
         restaurant.update(category: 'ls1 small')
@@ -79,37 +93,9 @@ class Restaurant < ApplicationRecord
       average
     end
   end
+
+  # ============================================================================
+  # EDIT NAME BASED ON CATEGORY
+  # ============================================================================
+
 end
-
-
-
-# def self.categorize_cafes
-#   ActiveRecord::Base.connection.select_all("SELECT *,
-#     CASE
-#     WHEN post_code LIKE LS1 AND num_of_chairs < 10 THEN INSERT INTO Restaurants (category) VALUES ('ls1 small')
-#     ELSE INSERT INTO restaurants (category) VALUES ('other')
-#     END
-#     FROM restaurants
-#     ")
-#
-#     # ActiveRecord::Base.connection.select_all("UPDATE restaurants
-#     #   SET category = 'small'
-#     #   WHERE num_of_chairs < 10;")
-#     #   Restaurant.all
-#
-#     # ActiveRecord::Base.connection.select_all("SELECT * FROM restaurants
-#     #   IF (CHARINDEX 'LS1', post_code > 0 AND num_of_chairs < 10)
-#     #     INSERT INTO Restaurants (category) VALUES ('ls1 small')
-#     #   IF post_code ANY 'LS1' AND num_of_chairs > 10 AND num_of_chairs < 100
-#     #     INSERT INTO Restaurants (category) VALUES ('ls1 medium')
-#     #   IF post_code ANY 'LS1' AND num_of_chairs > 100
-#     #     INSERT INTO Restaurants (category) VALUES ('ls1 large')
-#     #   ELSE
-#     #     INSERT INTO Restaurants (category) VALUES ('other')
-#     #   END
-#     #   ")
-#   end
-# # IF post_code LIKE LS12 AND num_of_chairs < 10
-# # INSERT INTO Restaurants (category) VALUES ("ls1 small")
-# # IF post_code LIKE LS12 AND num_of_chairs < 10
-# # INSERT INTO Restaurants (category) VALUES ("ls1 large")
