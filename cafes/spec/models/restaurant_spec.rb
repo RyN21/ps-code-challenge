@@ -55,15 +55,37 @@ RSpec.describe Restaurant, type: :model do
       expect(data[17].category).to eq("ls2 small")
     end
 
-    # it '.categorize_cafes' do
-    #   data = Restaurant.categorize_cafes
-    #   binding.pry
-    #   # ls1 = [@restaurant_1, @restaurant_3, @restaurant_4, @restaurant_5, @restaurant_6, @restaurant_7]
-    #   # ls2 = [@restaurant_2, @restaurant_8]
-    #   expect(@restaurant_1.category).to eq('ls1 medium')
-    #   expect(@restaurant_3.category).to eq('ls1 small')
-    #   expect(@restaurant_2.category).to eq('ls1 large')
-    #   expect(@restaurant_8.category).to eq('ls1 small')
-    # end
+    it '.aggregate_categories' do
+      data = Restaurant.aggregate_categories
+      expect(data[0].category).to eq("ls1 large")
+      expect(data[0].total_places).to eq(0)
+      expect(data[0].total_chairs).to eq(0)
+      expect(data[1].category).to eq("ls1 medium")
+      expect(data[1].total_places).to eq(15)
+      expect(data[1].total_chairs).to eq(0)
+      expect(data[2].category).to eq("ls1 medium")
+      expect(data[2].total_places).to eq(15)
+      expect(data[2].total_chairs).to eq(0)
+      expect(data[3].category).to eq("ls2 large")
+      expect(data[3].total_places).to eq(2)
+      expect(data[3].total_chairs).to eq(191)
+      expect(data[4].category).to eq("ls2 small")
+      expect(data[4].total_places).to eq(2)
+      expect(data[4].total_chairs).to eq(20)
+    end
   end
 end
+
+
+
+
+# it '.categorize_cafes' do
+#   data = Restaurant.categorize_cafes
+#   binding.pry
+#   # ls1 = [@restaurant_1, @restaurant_3, @restaurant_4, @restaurant_5, @restaurant_6, @restaurant_7]
+#   # ls2 = [@restaurant_2, @restaurant_8]
+#   expect(@restaurant_1.category).to eq('ls1 medium')
+#   expect(@restaurant_3.category).to eq('ls1 small')
+#   expect(@restaurant_2.category).to eq('ls1 large')
+#   expect(@restaurant_8.category).to eq('ls1 small')
+# end

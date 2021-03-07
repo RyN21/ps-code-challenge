@@ -38,7 +38,7 @@ class Restaurant < ApplicationRecord
   def self.categorize
     Restaurant.all.each do |r|
       if r.post_code.include?('LS1')
-        catergorize_ls1(r)
+        categorize_ls1(r)
       elsif r.post_code.include?('LS2')
         categorize_ls2(r)
       else
@@ -47,7 +47,7 @@ class Restaurant < ApplicationRecord
     end
   end
 
-  def self.catergorize_ls1(r)
+  def self.categorize_ls1(r)
     chairs = r.num_of_chairs
     if chairs < 10
       r.update(category: 'ls1 small')
@@ -63,7 +63,7 @@ class Restaurant < ApplicationRecord
 
   def self.categorize_ls2(r)
     percentile = find_percentile
-    r.num_of_chairs >= percentile ? r.category = 'ls2 large' : r.category = 'ls2 small'
+    r.num_of_chairs >= percentile ? r.update(category: 'ls2 large') : r.update(category: 'ls2 small')
   end
 
   def self.find_percentile
