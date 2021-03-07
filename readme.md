@@ -53,13 +53,15 @@
     - If it has neither of those post codes, the category is updated to = "other"
 
     For the test, I took the smaller sample csv file and iterated over each to create Restaurants. Here is what I tested...
-    ```    it '.categorize_cafes' do
+    ```
+      it '.categorize_cafes' do
       data = Restaurant.categorize
       expect(data[0].category).to eq("ls1 medium")
       expect(data[1].category).to eq("ls2 large")
       expect(data[4].category).to eq("ls1 small")
       expect(data[17].category).to eq("ls2 small")
-    end```
+    end
+    ```
 
 6) Write a custom view to aggregate the categories [provide view SQL AND the results of this view]
     - category: The category column
