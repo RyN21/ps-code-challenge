@@ -50,14 +50,13 @@ RSpec.describe EditByCategory, type: :model do
 
   it 'can edit names based on category' do
     data = EditByCategory.new(Restaurant.all)
-    data.edit_names
-
+    new_names = data.edit_names
     # Changes name for restaurants with category as medium or large
-    expect(data.restaurants[0].name).to eq("ls1 medium Bagel Nash")
-    expect(data.restaurants[1].name).to eq("ls1 medium Bagel Nash")
-    expect(data.restaurants[16].name).to eq("ls1 large Chilli White")
+    expect(new_names[0].name).to eq("ls1 medium Bagel Nash")
+    expect(new_names[1].name).to eq("ls1 medium Bagel Nash")
+    expect(new_names[16].name).to eq("ls2 large All Bar One")
 
     # Does NOT change name for restaurants that are not medium or large
-    expect(data.restaurants[2].name).to eq("Barburrito")
+    expect(new_names[2].name).to eq("Barburrito")
   end
 end

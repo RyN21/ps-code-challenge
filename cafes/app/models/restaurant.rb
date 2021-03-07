@@ -77,7 +77,39 @@ class Restaurant < ApplicationRecord
   end
 
   # ============================================================================
-  # EDIT NAME BASED ON CATEGORY
+  # Export data to CSV  &  Delete records
   # ============================================================================
 
+  def self.export_data_to_csv(data)
+    headers = ["Café/Restaurant Name", "Street Address", "Post Code", "Number Of Chairs", "Category"]
+    attributes = ["name", "street_address", "post_code", "num_of_chairs", "category"]
+
+    CSV.generate(headers: true) do |csv|
+      csv << headers
+
+      data.each do |r|
+        csv << attributes.map do |attr|
+          r.send(attr)
+        end
+      end
+    end
+  end
+
+  def self.delete_small
+    where("category LIKE ?", "%small").each do |r|
+      r.delete
+    end
+  end
+
+  # ============================================================================
+  # Edit Names
+  # ============================================================================
+
+  def self.edit_names
+    where("category LIKE ?", "%medium").or(where("category LIKE ?", "%large")).each do |r|
+      category_name = r.category
+      name = r.name
+      r.update(name: "#{category_name} #{name}")
+    end
+  end
 end

@@ -30,4 +30,11 @@ class EditByCategory
     @restaurants.where("category LIKE ?", "%small")
   end
 
+  def edit_names
+    @restaurants.where("category LIKE ?", "%medium").or(@restaurants.where("category LIKE ?", "%large")).each do |r|
+      category_name = r.category
+      name = r.name
+      r.update(name: "#{category_name} #{name}")
+    end
+  end
 end

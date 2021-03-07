@@ -1,13 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe Restaurant, type: :model do
+
   describe 'Validations' do
     it {should validate_presence_of :name}
     it {should validate_presence_of :street_address}
     it {should validate_presence_of :post_code}
     it {should validate_presence_of :num_of_chairs}
   end
+
   describe 'class methods' do
+
     before(:each) do
       Restaurant.destroy_all
       CSV.foreach("./Small Street Cafes 2020-21.csv", headers: true) do |row|
@@ -71,19 +74,45 @@ RSpec.describe Restaurant, type: :model do
       expect(data[3]["total_places"]).to eq(1)
       expect(data[3]["total_chairs"]).to eq(20)
     end
+
+    it 'export_data_to_csv' do
+      Restaurant.categorize
+      small = Restaurant.where("category LIKE ?", "%small").order(:num_of_chairs)
+      csv_small = Restaurant.export_data_to_csv(small)
+      csv = CSV.parse(csv_small)
+
+      expect(csv[0][0]).to eq("Café/Restaurant Name")
+      expect(csv[0][1]).to eq("Street Address")
+      expect(csv[0][2]).to eq("Post Code")
+      expect(csv[0][3]).to eq("Number Of Chairs")
+      expect(csv[0][4]).to eq("Category")
+
+      expect(csv[3][0]).to eq("Barburrito")
+      expect(csv[3][1]).to eq("62 The Headrow")
+      expect(csv[3][2]).to eq("LS1 8EQ")
+      expect(csv[3][3]).to eq("8")
+      expect(csv[3][4]).to eq("ls1 small")
+
+      expect(csv.count).to eq(5)
+    end
+
+    it '.delete_records' do
+      Restaurant.categorize
+      small = Restaurant.where("category LIKE ?", "%small")
+      expect(small.count).to eq(4)
+
+      Restaurant.delete_small
+      new_small = Restaurant.where("category LIKE ?", "%small")
+      expect(new_small.count).to eq(0)
+    end
+
+    it '.edit_names' do
+      Restaurant.categorize
+      Restaurant.edit_names
+      data = Restaurant.all.order(:num_of_chairs)
+      expect(data[2].name).to eq("Barburrito")
+      expect(data[3].name).to eq("ls1 medium Bagel Nash")
+      expect(data[20].name).to eq("ls2 large All Bar One")
+    end
   end
 end
-
-
-
-
-# it '.categorize_restaurants' do
-#   data = Restaurant.categorize_restaurants
-#   binding.pry
-#   # ls1 = [@restaurant_1, @restaurant_3, @restaurant_4, @restaurant_5, @restaurant_6, @restaurant_7]
-#   # ls2 = [@restaurant_2, @restaurant_8]
-#   expect(@restaurant_1.category).to eq('ls1 medium')
-#   expect(@restaurant_3.category).to eq('ls1 small')
-#   expect(@restaurant_2.category).to eq('ls1 large')
-#   expect(@restaurant_8.category).to eq('ls1 small')
-# end
