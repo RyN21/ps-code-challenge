@@ -38,6 +38,28 @@
         - `category = 'other'`
 
     *Please share any tests you wrote for #5*
+    
+    I couldn't decide between creating class methods in the Restaurant model or creating a seperate class that takes in an array of restaurants and then categorizes each restaurant. So I did both for now. The methods are essentially the same in both. 
+    So the approach I took was taking the list or Restaurants and iterating over each. I then had if else statemtents that divided the restaurant by post_code. 
+    - If restaurant post_code.include?("LS1") then call the catergorize_ls1 method. 
+    	- this method would then update the category column based on the amount of chairs with "ls1_small", "ls1_medium", and "ls1_large"
+    - If restaurant post_code.include?("LS2") then call the catergorize_ls2 method. 
+    	- this method start with finding the percentile with a helper method.
+    	- this helper method would take take all the restaurants with "LS2" in the post_code and create an array of num_of_chairs, and then sort them in order.
+    	- I then created an if statement for whether the array was odd or even.
+    	- if odd, then took the middle index and called that the percentile
+    	- if even, I avereged the 2 middle elements and called that the percentile
+    	- After finding the percentile, I simply created another if statement that compared whether the num_of_chairs is less then or equal/greater than the percentile. if larger than category = "ls2 large" if smaller then category = "ls2 small"
+    - If it has neither of those post codes, the category is updated to = "other"
+
+    For the test, I took the smaller sample csv file and iterated over each to create Restaurants. Here is what I tested...
+    ```    it '.categorize_cafes' do
+      data = Restaurant.categorize
+      expect(data[0].category).to eq("ls1 medium")
+      expect(data[1].category).to eq("ls2 large")
+      expect(data[4].category).to eq("ls1 small")
+      expect(data[17].category).to eq("ls2 small")
+    end```
 
 6) Write a custom view to aggregate the categories [provide view SQL AND the results of this view]
     - category: The category column
