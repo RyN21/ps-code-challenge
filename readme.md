@@ -46,7 +46,8 @@
     GROUP BY post_code
     ORDER BY post_code;
     ```
-    ![Screen Shot 2021-03-07 at 9 33 54 PM](https://user-images.githubusercontent.com/33795357/110276851-4c2dfd80-7f91-11eb-81ac-b7c3f734ae4b.png)
+    ![Screen Shot 2021-03-07 at 10 10 25 PM](https://user-images.githubusercontent.com/33795357/110277268-22290b00-7f92-11eb-8674-4682a89c1ef6.png)
+
 
 
 5) Write a Rails script to categorize the cafes and write the result to the category according to the rules:[provide the script]
