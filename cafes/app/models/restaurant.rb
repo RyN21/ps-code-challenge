@@ -5,7 +5,10 @@ class Restaurant < ApplicationRecord
   :post_code,
   :num_of_chairs
 
-  # CREATE VIEW v_by_post_code AS
+  # ============================================================================
+  # CREATE VIEW SQL PROBLEMS
+  # ============================================================================
+
   def self.by_post_code
     ActiveRecord::Base.connection.select_all('CREATE VIEW v_names_pc AS
     SELECT name, post_code, num_of_chairs FROM restaurants ORDER BY post_code;')
@@ -19,18 +22,17 @@ class Restaurant < ApplicationRecord
     FROM restaurants
     GROUP BY post_code
     ORDER BY post_code;').to_a
+
   end
 
   def self.aggregate_categories
     ActiveRecord::Base.connection.select_all('
-    CREATE VIEW v_aggregate_categories AS
     SELECT category,
     COUNT(id) AS total_places,
     SUM(num_of_chairs) AS total_chairs
     FROM restaurants
     GROUP BY category
     ORDER BY category;').to_a
-    # SELECT category, COUNT(id) AS total_places, SUM(num_of_chairs) AS total_chairs FROM restaurants GROUP BY category ORDER BY category;
   end
 
   # ============================================================================
@@ -53,13 +55,10 @@ class Restaurant < ApplicationRecord
     chairs = r.num_of_chairs
     if chairs < 10
       r.update(category: 'ls1 small')
-      # r.category = 'ls1 small'
     elsif chairs > 10 && chairs < 100
       r.update(category: 'ls1 medium')
-      # r.category = 'ls1 medium'
     else
       r.update(category: 'ls1 large')
-      # r.category = 'ls1 large'
     end
   end
 

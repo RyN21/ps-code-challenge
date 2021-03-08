@@ -13,6 +13,7 @@ RSpec.describe Restaurant, type: :model do
 
     before(:each) do
       Restaurant.destroy_all
+      ActiveRecord::Base.connection.reset_pk_sequence!('restaurants')
       CSV.foreach("./Small Street Cafes 2020-21.csv", headers: true) do |row|
         Restaurant.create({
           name: row[0],
@@ -21,7 +22,6 @@ RSpec.describe Restaurant, type: :model do
           num_of_chairs: row[3],
           })
       end
-      Restaurant.reset_pk_sequence
     end
 
     it '.by_post_code' do
@@ -62,7 +62,6 @@ RSpec.describe Restaurant, type: :model do
     it '.aggregate_categories' do
       Restaurant.categorize
       data = Restaurant.aggregate_categories
-      binding.pry
       expect(data[0]["category"]).to eq("ls1 medium")
       expect(data[0]["total_places"]).to eq(15)
       expect(data[0]["total_chairs"]).to eq(376)

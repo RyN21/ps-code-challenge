@@ -2,8 +2,9 @@ require 'csv'
 
 namespace :db do
   desc "Seed restaurants from csv file"
-  task seed_restaurants: :environment do
+  task seed: :environment do
     Restaurant.destroy_all
+    Restaurant.reset_pk_sequence
     CSV.foreach("./Street Cafes 2020-21.csv", headers: true) do |row|
       Restaurant.create({
         name: row[0],
@@ -12,12 +13,11 @@ namespace :db do
         num_of_chairs: row[3],
         })
     end
-    Restaurant.reset_pk_sequence
-
   end
 
-  task seed_small_restaurants: :environment do
+  task seed_small: :environment do
     Restaurant.destroy_all
+    Restaurant.reset_pk_sequence
     CSV.foreach("./Small Street Cafes 2020-21.csv", headers: true) do |row|
       Restaurant.create({
         name: row[0],
@@ -26,7 +26,5 @@ namespace :db do
         num_of_chairs: row[3],
         })
     end
-    Restaurant.reset_pk_sequence
-
   end
 end
