@@ -25,6 +25,30 @@
     I created a smaller version of the original CSV file and I am considering to implement that data into the spec instead of creating my own instances. 
     As of now, I am unsure what is meant by (view SQL) but will look deeper into this.
     
+    Was able to look into`CREATE VIEW` and I must say, I really like what it can do. 
+    I was able to use it to solve the last part I was struggling with for this query. 
+    
+    To verify the answers, I used a smaller version of the csv file to compare and made some tests for it.
+    Here are the Views: 
+    
+    ```
+    CREATE VIEW v_names_pc AS
+    SELECT name, post_code, num_of_chairs FROM restaurants ORDER BY post_code;
+    
+    CREATE VIEW v_by_post_code AS
+    SELECT post_code,
+    COUNT(id) AS total_places,
+    SUM(num_of_chairs) AS total_chairs,
+    ROUND((SUM(num_of_chairs)*100.00)/(SELECT SUM(num_of_chairs) FROM restaurants), 2) AS chairs_pct,
+    (SELECT name FROM v_names_pc WHERE v_names_pc.post_code = restaurants.post_code ORDER BY num_of_chairs DESC LIMIT 1) AS place_with_max_chairs,
+    MAX(num_of_chairs) AS max_chairs
+    FROM restaurants
+    GROUP BY post_code
+    ORDER BY post_code;
+    ```
+    ![Screen Shot 2021-03-07 at 10 10 25 PM](https://user-images.githubusercontent.com/33795357/110277268-22290b00-7f92-11eb-8674-4682a89c1ef6.png)
+
+
 
 5) Write a Rails script to categorize the cafes and write the result to the category according to the rules:[provide the script]
     - If the Post Code is of the LS1 prefix type:
@@ -62,20 +86,82 @@
       expect(data[17].category).to eq("ls2 small")
     end
     ```
+    ![Screen Shot 2021-03-07 at 3 13 27 PM](https://user-images.githubusercontent.com/33795357/110276894-5fd96400-7f91-11eb-9d34-e9678bab7ce9.png)
+
 
 6) Write a custom view to aggregate the categories [provide view SQL AND the results of this view]
     - category: The category column
     - total_places: The number of places in that category
     - total_chairs: The total chairs in that category
 
+    View: 
+    ```
+    CREATE VIEW v_aggregate_categories AS
+    SELECT category,
+    COUNT(id) AS total_places,
+    SUM(num_of_chairs) AS total_chairs
+    FROM restaurants
+    GROUP BY category
+    ORDER BY category;
+    ```
+
 7) Write a script in rails to:
     - For street_cafes categorized as small, write a script that exports their data to a csv and deletes the records
     - For street cafes categorized as medium or large, write a script that concatenates the category name to the beginning of the name and writes it back to the name column
 	
     *Please share any tests you wrote for #7*
+    
+    Test that it can export data to csv:
+    ```
+    it 'export_data_to_csv' do
+      Restaurant.categorize
+      small = Restaurant.where("category LIKE ?", "%small").order(:num_of_chairs)
+      csv_small = Restaurant.export_data_to_csv(small)
+      csv = CSV.parse(csv_small)
+
+      expect(csv[0][0]).to eq("Café/Restaurant Name")
+      expect(csv[0][1]).to eq("Street Address")
+      expect(csv[0][2]).to eq("Post Code")
+      expect(csv[0][3]).to eq("Number Of Chairs")
+      expect(csv[0][4]).to eq("Category")
+
+      expect(csv[3][0]).to eq("Barburrito")
+      expect(csv[3][1]).to eq("62 The Headrow")
+      expect(csv[3][2]).to eq("LS1 8EQ")
+      expect(csv[3][3]).to eq("8")
+      expect(csv[3][4]).to eq("ls1 small")
+
+      expect(csv.count).to eq(5)
+    end
+    ```
+    
+    Test that it can delete records:
+    ```
+    it '.delete_records' do
+      Restaurant.categorize
+      small = Restaurant.where("category LIKE ?", "%small")
+      expect(small.count).to eq(4)
+
+      Restaurant.delete_small
+      new_small = Restaurant.where("category LIKE ?", "%small")
+      expect(new_small.count).to eq(0)
+    end
+    ```
+    
+    Test that it can edit names:
+    ```
+    it '.edit_names' do
+      Restaurant.categorize
+      Restaurant.edit_names
+      data = Restaurant.all.order(:num_of_chairs)
+      expect(data[2].name).to eq("Barburrito")
+      expect(data[3].name).to eq("ls1 medium Bagel Nash")
+      expect(data[20].name).to eq("ls2 large All Bar One")
+    end
+    ```
 
 8) Show your work and check your email for submission instructions.
 
 9) Celebrate, you did great! 
 
-
+PHEWW!!
