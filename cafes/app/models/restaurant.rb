@@ -5,26 +5,32 @@ class Restaurant < ApplicationRecord
   :post_code,
   :num_of_chairs
 
+  # CREATE VIEW v_by_post_code AS
   def self.by_post_code
+    ActiveRecord::Base.connection.select_all('CREATE VIEW v_names_pc AS
+    SELECT name, post_code, num_of_chairs FROM restaurants ORDER BY post_code;')
+
     ActiveRecord::Base.connection.select_all('SELECT post_code,
     COUNT(id) AS total_places,
     SUM(num_of_chairs) AS total_chairs,
     ROUND((SUM(num_of_chairs)*100.00)/(SELECT SUM(num_of_chairs) FROM restaurants), 2) AS chairs_pct,
+    (SELECT name FROM v_names_pc WHERE v_names_pc.post_code = restaurants.post_code ORDER BY num_of_chairs DESC LIMIT 1) AS place_with_max_chairs,
     MAX(num_of_chairs) AS max_chairs
     FROM restaurants
     GROUP BY post_code
     ORDER BY post_code;').to_a
-    # SELECT post_code, COUNT(id) AS total_places, SUM(num_of_chairs) AS total_chairs, ROUND((SUM(num_of_chairs)*100.00)/(SELECT SUM(num_of_chairs) FROM restaurants), 2) AS chairs_pct, MAX(num_of_chairs) AS max_chairs FROM restaurants GROUP BY post_code ORDER BY post_code;
-    # still need to get name of of place with max chairs
   end
 
   def self.aggregate_categories
-    ActiveRecord::Base.connection.select_all('SELECT category,
+    ActiveRecord::Base.connection.select_all('
+    CREATE VIEW v_aggregate_categories AS
+    SELECT category,
     COUNT(id) AS total_places,
     SUM(num_of_chairs) AS total_chairs
     FROM restaurants
     GROUP BY category
     ORDER BY category;').to_a
+    # SELECT category, COUNT(id) AS total_places, SUM(num_of_chairs) AS total_chairs FROM restaurants GROUP BY category ORDER BY category;
   end
 
   # ============================================================================
@@ -58,11 +64,10 @@ class Restaurant < ApplicationRecord
   end
 
   def self.categorize_ls2(r)
-    percentile = find_percentile
     r.num_of_chairs >= percentile ? r.update(category: 'ls2 large') : r.update(category: 'ls2 small')
   end
 
-  def self.find_percentile
+  def self.percentile
     ls2_chairs  = Restaurant.where("post_code LIKE 'LS2%'").pluck(:num_of_chairs).sort
     chair_count = ls2_chairs.count
     if chair_count.odd?
@@ -71,8 +76,7 @@ class Restaurant < ApplicationRecord
     else
       index_1 = (chair_count / 2) - 1
       index_2 = index_1 + 1
-      averave = index_1 + index_2 / 2
-      average
+      index_1 + index_2 / 2
     end
   end
 

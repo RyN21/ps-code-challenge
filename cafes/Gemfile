@@ -35,6 +35,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'travis'
   gem 'table_print', '~> 1.5', '>= 1.5.7'
+  gem 'activerecord_reset_pk_sequence'
 end
 
 group :development do

@@ -21,6 +21,7 @@ RSpec.describe Restaurant, type: :model do
           num_of_chairs: row[3],
           })
       end
+      Restaurant.reset_pk_sequence
     end
 
     it '.by_post_code' do
@@ -29,7 +30,7 @@ RSpec.describe Restaurant, type: :model do
       expect(data[0]["total_places"]).to eq(1)
       expect(data[0]["total_chairs"]).to eq(14)
       expect(data[0]["chairs_pct"]).to eq("2.31")
-      # expect(data[0].place_with_max_chairs).to eq("Bagel Nash")
+      expect(data[0]["place_with_max_chairs"]).to eq("Bagel Nash")
       expect(data[0]["max_chairs"]).to eq(14)
       expect(data[0]["category"]).to eq(nil)
 
@@ -37,7 +38,7 @@ RSpec.describe Restaurant, type: :model do
       expect(data[13]["total_places"]).to eq(3)
       expect(data[13]["total_chairs"]).to eq(58)
       expect(data[13]["chairs_pct"]).to eq("9.56")
-      # expect(data[3].place_with_max_chairs).to eq("Caffe Nero (Bond Street side)")
+      expect(data[13]["place_with_max_chairs"]).to eq("Caffe Nero (Bond Street side)")
       expect(data[13]["max_chairs"]).to eq(22)
       expect(data[13]["category"]).to eq(nil)
 
@@ -45,7 +46,7 @@ RSpec.describe Restaurant, type: :model do
       expect(data[14]["total_places"]).to eq(2)
       expect(data[14]["total_chairs"]).to eq(28)
       expect(data[14]["chairs_pct"]).to eq("4.61")
-      # expect(data[3].place_with_max_chairs).to eq("Caffe Nero (Bond Street side)")
+      expect(data[14]["place_with_max_chairs"]).to eq("Browns")
       expect(data[14]["max_chairs"]).to eq(20)
       expect(data[14]["category"]).to eq(nil)
     end
@@ -61,6 +62,7 @@ RSpec.describe Restaurant, type: :model do
     it '.aggregate_categories' do
       Restaurant.categorize
       data = Restaurant.aggregate_categories
+      binding.pry
       expect(data[0]["category"]).to eq("ls1 medium")
       expect(data[0]["total_places"]).to eq(15)
       expect(data[0]["total_chairs"]).to eq(376)

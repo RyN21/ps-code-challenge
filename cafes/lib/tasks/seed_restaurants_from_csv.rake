@@ -12,7 +12,8 @@ namespace :db do
         num_of_chairs: row[3],
         })
     end
-    ActiveRecord::Base.connection.reset_pk_sequence!("Restaurant")
+    Restaurant.reset_pk_sequence
+
   end
 
   task seed_small_restaurants: :environment do
@@ -25,6 +26,7 @@ namespace :db do
         num_of_chairs: row[3],
         })
     end
-    ActiveRecord::Base.connection.reset_pk_sequence!("Restaurant")
+    Restaurant.reset_pk_sequence
+
   end
 end
